@@ -1,0 +1,71 @@
+version: '2'
+services:
+  kibana:
+      image: docker.elastic.co/kibana/kibana-oss:6.0.0
+      networks: 
+        - data-stream
+      ports:
+        - 5601:5601
+      environment:
+        - ELASTICSEARCH_URL=http://elasticsearch:9200
+
+  elasticsearch:
+      image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.0.0
+      networks: 
+        - data-stream
+      ports:
+        - 9200:9200
+        - 9300:9300
+      environment:
+        - cluster.name=es-cluster
+        - "ES_KAVA_OPTS=Xms1g -Xmx1g"
+      ulimits:
+        memlock:
+          soft: -1
+          hard: -1
+        nofile:
+          soft: 65536
+          hard: 65536
+
+  spark:
+      image: sequenceiq/spark:1.6.0
+      hostname: sandbox
+      command: bash
+      networks: 
+       - data-stream
+      ports:
+        - 8088:8088
+        - 8042:8042
+        - 4040:4040
+      volumes:
+        - ./rail_aggregator/target/:/tmp/app
+      tty: true
+
+  zookeeper:
+    image: wurstmeister/zookeeper:latest
+    ports:
+      - "2181:2181"
+    networks: 
+       - data-stream
+
+  kafka:
+    image: wurstmeister/kafka:2.11-1.1.1
+    ports:
+      - "9092:9092"
+    links:
+      - zookeeper
+    networks: 
+      - data-stream
+    environment:
+      KAFKA_ADVERTISED_HOST_NAME: 127.0.0.1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
+      KAFKA_DELETE_TOPIC_ENABLE: 'true'
+      KAFKA_CREATE_TOPICS: "topic-test:1:1"
+      HOSTNAME_COMMAND: "route -n | awk '/UG[ \t]/{print $$2}'"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+networks: 
+  data-stream:
+    driver: bridge
