@@ -15,7 +15,7 @@ _num_message = 100
 
 
 def kafka_is_up():
-	producer = KafkaProducer(bootstrap_servers='127.0.0.1:9092', 
+	producer = KafkaProducer(bootstrap_servers='localhost:19092', 
 		                     value_serializer=lambda v: json.dumps(v).encode('utf-8'),
 		                     retries=5)
 	futures = []
@@ -24,7 +24,7 @@ def kafka_is_up():
 	# print('sending: {}'.format(msg))
 	futures.append(producer.send('test', msg))
 
-	ret = [f.get(timeout=5) for f in futures]	
+	ret = [f.get(timeout=10) for f in futures]	
 	producer.close()
 	return len(ret) == 1
 

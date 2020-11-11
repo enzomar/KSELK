@@ -55,20 +55,37 @@ services:
        - data-stream
 
   kafka:
+    # https://www.confluent.io/blog/kafka-client-cannot-connect-to-broker-on-aws-on-docker-etc/
+    # https://medium.com/@marcelo.hossomi/running-kafka-in-docker-machine-64d1501d6f0b
     image: wurstmeister/kafka:2.11-1.1.1
     ports:
-      - "9092:9092"    
+      - "19092:19092"   
     links:
       - zookeeper
     networks: 
       - data-stream
     environment:
-      #KAFKA_ADVERTISED_HOST_NAME: kafka
+      # KAFKA_ADVERTISED_HOST_NAME: kafka
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
       KAFKA_DELETE_TOPIC_ENABLE: 'true'
       KAFKA_CREATE_TOPICS: "topic-test:1:1"
-      HOSTNAME_COMMAND: "route -n | awk '/UG[ \t]/{print $$2}'"
+
+      KAFKA_LISTENERS: INTERNAL://kafka:9092,EXTERNAL://:19092
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka:9092,EXTERNAL://localhost:19092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
+
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL      
+
+      #KAFKA_LISTENERS: INTERNAL://kafka:9092,OUTSIDE://kafka:9094
+      #KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka:9092,OUTSIDE://kafka:9094
+      #KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,OUTSIDE:PLAINTEXT
+      
+      
+      #KAFKA_ADVERTISED_LISTENERS: INSIDE://:9092,OUTSIDE://127.0.0.1:9094
+      #KAFKA_LISTENERS: INSIDE://:9092,OUTSIDE://:9094
+      #KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
+      #KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
 
