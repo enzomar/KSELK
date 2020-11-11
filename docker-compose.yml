@@ -27,20 +27,24 @@ services:
           soft: 65536
           hard: 65536
 
+  
   spark:
-      image: sequenceiq/spark:1.6.0
-      hostname: sandbox
-      command: bash
+      # image: sequenceiq/spark:1.6.0
+      image: jupyter/pyspark-notebook
+      # hostname: sandbox
+      # command: bash
       networks: 
        - data-stream
       ports:
         - 8088:8088
-        - 8042:8042
-        - 4040:4040
+        - 8042:8042        
+        - 8888:8888
+        - 4040-4080:4040-4080
       volumes:
-        - ./rail_aggregator/target/:/tmp/app
+        - ./spark_jobs:/tmp/app
+        - ./spark_jobs:/home/jovyan/work                
       tty: true
-
+  
   zookeeper:
     image: wurstmeister/zookeeper:latest
     ports:

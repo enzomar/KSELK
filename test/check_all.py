@@ -14,6 +14,21 @@ _topic='pdt.rail2'
 _num_message = 100
 
 
+def kafka_is_up():
+	producer = KafkaProducer(bootstrap_servers='localhost:9092', 
+		                     value_serializer=lambda v: json.dumps(v).encode('utf-8'),
+		                     retries=5)
+	futures = []
+
+	msg = 'health_check'
+	# print('sending: {}'.format(msg))
+	futures.append(producer.send('test', msg))
+
+	ret = [f.get(timeout=5) for f in futures]	
+	producer.close()
+	return len(ret) == 1
+
+
 def elastic_is_up():
 	ret = requests.get('http://localhost:9200/_cluster/health?pretty')
 	body = ret.json()
@@ -31,10 +46,10 @@ def elastic_create_index(index):
 def elastic_delete_index(index):
 	requests.delete('http://localhost:9200/{0}'.format(index))
 
-def setup_deploy_spakr_job():
-	os.system('sh rerun_spark.sh &')
+def submit_sparkjob():
+	os.system('sh submit_sparkjob_py.sh')
 
-def setup_send_to_kafka():
+def produce_test_data():
 	producer = KafkaProducer(bootstrap_servers='localhost:9092', 
 		                     value_serializer=lambda v: json.dumps(v).encode('utf-8'),
 		                     retries=5)
@@ -70,26 +85,30 @@ def read_from_elastic():
 	pass
 
 
+def health_check():
+	elastic = elastic_is_up()
+	kafka = kafka_is_up()
+
+	print('Kafka: {0}'.format(elastic))
+	print('Elastic: {0}'.format(kafka))
+
+	return elastic and kafka
 
 
+def setup():
+	elastic_create_index('rail_all')
 
 def run():
-	#print("SETUP: update spark job")
-	#setup_deploy_spakr_job()
-	#time.sleep(1)
-	#print("SETUP: populate kafka")
-	#setup_send_to_kafka()
-	#time.sleep(5)
-	#print("VALIDATION: check kafka contains the sent data")
-	#consume_kafka()
-	elastic_is_up()
-	#elastic_list_indexes()
-	elastic_create_index('rail_all')
-	#elastic_list_indexes()
-	#elastic_delete_index('pippo')
-	elastic_list_indexes()
+	print('Health check')
+	health_check()
+	print('Setup')
+	setup()
+	print('Submit spark job')
+	submit_sparkjob()
+	print('Produce test data')
+	produce_test_data()
 
-
+	
 
 
 if __name__ == '__main__':

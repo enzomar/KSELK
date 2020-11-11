@@ -1,0 +1,1 @@
+docker exec -it kselk_spark_1 spark-submit --deploy-mode client --master yarn /tmp/app/src/py/sample.py

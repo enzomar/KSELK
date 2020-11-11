@@ -1,0 +1,1 @@
+docker exec -it kselk_spark_1 spark-submit --deploy-mode client --master yarn /tmp/app/RailAggregator-1.0.0-SNAPSHOT-jar-with-dependencies.jar
