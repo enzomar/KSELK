@@ -10,12 +10,12 @@ import requests
 
 
 
-_topic='pdt.rail2'
+_topic='topic-test'
 _num_message = 100
 
 
 def kafka_is_up():
-	producer = KafkaProducer(bootstrap_servers='localhost:9092', 
+	producer = KafkaProducer(bootstrap_servers='127.0.0.1:9092', 
 		                     value_serializer=lambda v: json.dumps(v).encode('utf-8'),
 		                     retries=5)
 	futures = []
@@ -103,8 +103,8 @@ def run():
 	health_check()
 	print('Setup')
 	setup()
-	print('Submit spark job')
-	submit_sparkjob()
+	#print('Submit spark job')
+	#submit_sparkjob()
 	print('Produce test data')
 	produce_test_data()
 

@@ -43,6 +43,8 @@ services:
       volumes:
         - ./spark_jobs:/tmp/app
         - ./spark_jobs:/home/jovyan/work                
+      environment:
+        GRANT_SUDO: 'yes'
       tty: true
   
   zookeeper:
@@ -55,13 +57,13 @@ services:
   kafka:
     image: wurstmeister/kafka:2.11-1.1.1
     ports:
-      - "9092:9092"
+      - "9092:9092"    
     links:
       - zookeeper
     networks: 
       - data-stream
     environment:
-      KAFKA_ADVERTISED_HOST_NAME: 127.0.0.1
+      #KAFKA_ADVERTISED_HOST_NAME: kafka
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
       KAFKA_DELETE_TOPIC_ENABLE: 'true'
