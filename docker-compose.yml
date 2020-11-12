@@ -43,12 +43,10 @@ services:
       volumes:
         - ./spark_jobs:/tmp/app
         - ./spark_jobs:/home/jovyan/work                
-      environment:
-        GRANT_SUDO: 'yes'
       tty: true
   
   zookeeper:
-    image: wurstmeister/zookeeper:latest
+    image: wurstmeister/zookeeper:3.4.6
     ports:
       - "2181:2181"
     networks: 
@@ -57,21 +55,23 @@ services:
   kafka:
     # https://www.confluent.io/blog/kafka-client-cannot-connect-to-broker-on-aws-on-docker-etc/
     # https://medium.com/@marcelo.hossomi/running-kafka-in-docker-machine-64d1501d6f0b
-    image: wurstmeister/kafka:2.11-1.1.1
+    # https://www.kaaproject.org/blog/kafka-docker
+    image: wurstmeister/kafka:2.11-2.0.0
     ports:
       - "19092:19092"   
     links:
       - zookeeper
     networks: 
-      - data-stream
+       - data-stream
     environment:
       # KAFKA_ADVERTISED_HOST_NAME: kafka
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
       KAFKA_DELETE_TOPIC_ENABLE: 'true'
       KAFKA_CREATE_TOPICS: "topic-test:1:1"
-
-      KAFKA_LISTENERS: INTERNAL://kafka:9092,EXTERNAL://:19092
+      # listeners: The address the socket server listens on.
+      KAFKA_LISTENERS: INTERNAL://0.0.0.0:9092,EXTERNAL://0.0.0.0:19092
+      # advertised.listeners: Hostname and port the broker will advertise to producers and consumers.
       KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka:9092,EXTERNAL://localhost:19092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
 

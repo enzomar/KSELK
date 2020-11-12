@@ -20,7 +20,7 @@ def kafka_is_up():
 		                     retries=5)
 	futures = []
 
-	msg = 'health_check'
+	msg = {'health_check':1}
 	# print('sending: {}'.format(msg))
 	futures.append(producer.send('test', msg))
 
@@ -50,7 +50,7 @@ def submit_sparkjob():
 	os.system('sh submit_sparkjob_py.sh')
 
 def produce_test_data():
-	producer = KafkaProducer(bootstrap_servers='localhost:9092', 
+	producer = KafkaProducer(bootstrap_servers='localhost:19092', 
 		                     value_serializer=lambda v: json.dumps(v).encode('utf-8'),
 		                     retries=5)
 	futures = []
