@@ -1,7 +1,7 @@
 docker-compose stop 
 docker-compose build 
 
-sudo sysctl -w vm.max_map_count=262144
+# sudo sysctl -w vm.max_map_count=262144
 
 docker-compose up -d
 docker-compose ps
