@@ -1,92 +1,63 @@
-''''
-Taken from: 
-https://mtpatter.github.io/bilao/notebooks/html/01-spark-struct-stream-kafka.html
-
-note that the jar file 
-org.apache.spark:spark-sql-kafka-0-10_2.12:3.0.1
-Is aligned to teh current spark version 3.0.1
-'''
-
 import os
 os.environ['PYSPARK_SUBMIT_ARGS'] = '--packages org.apache.spark:spark-streaming-kafka-0-8_2.11:2.1.0,org.apache.spark:spark-sql-kafka-0-10_2.12:3.0.1 pyspark-shell'
 
-from ast import literal_eval
 
 from pyspark.sql import SparkSession
+from pyspark.sql.functions import *
+from pyspark.sql.types import *
 
-spark = SparkSession \
-    .builder \
-    .appName("SSKafka") \
-    .getOrCreate()
+
+KAFKA_TOPIC_NAME_CONS = "topic-test"
+KAFKA_BOOTSTRAP_SERVERS_CONS = 'kafka:9092'
+
+
+# Set Elasticsearch config
+es_hostname='localhost'
+es_portno='9200'
+es_doc_type_name='rail_all'
+
+if __name__ == "__main__":
+    print("Spark job starting ...")
+
+    # Create a spark session
+    spark = SparkSession \
+        .builder \
+        .appName("PySpark Structured Streaming with Kafka Demo") \
+        .master("local[*]") \
+        .getOrCreate()
     
-# default for startingOffsets is "latest", but "earliest" allows rewind for missed alerts    
-dsraw = spark \
-  .readStream \
-  .format("kafka") \
-  .option("kafka.bootstrap.servers", "kafka:9092") \
-  .option("subscribe", "topic-test") \
-  .option("startingOffsets", "earliest") \
-  .load()
-
-# print(type(dsraw))
-# print(type(ds))
+    spark.sparkContext.setLogLevel("DEBUG")
 
 
-rawQuery = dsraw \
-        .writeStream \
-        .queryName("qraw")\
-        .format("memory")\
-        .start()
+    # Consume from topic
+    df_message = spark \
+        .readStream \
+        .format("kafka") \
+        .option("kafka.bootstrap.servers", KAFKA_BOOTSTRAP_SERVERS_CONS) \
+        .option("subscribe", KAFKA_TOPIC_NAME_CONS) \
+        .load()
 
-raw = spark.sql("select * from qraw")
-raw.show() 
+    print("Printing Schema of df_message: ")
+    df_message.printSchema()
+    
+    # convert the data into string
+    df_message_string = df_message.selectExpr("CAST(value AS STRING) as value")
+    
+    # define schema to read the Json format data
+    message_schema = StructType() \
+        .add('event', StringType())
+    
+    # parse JSON data
+    df_message_string_parsed = df_message_string.select(from_json(df_message_string.value, message_schema).alias('msg_data'))
+    df_message_string_parsed.printSchema()
 
-'''
-
-raw.write.format("es") \
-  .option("es.resource", "rail_all") \
-  .option("es.nodes", "elasticsearch:9200") \
-  .save()
-
-from pyspark.sql import SparkSession
-spark = SparkSession.builder.appName('ES_indexer').getOrCreate()
-df = spark.createDataFrame([{'num': i} for i in xrange(10)])
-df = df.drop('_id')
-df.write.format(
-    'org.elasticsearch.spark.sql'
-).option(
-    'es.nodes', 'http://spark-data-push-adertadaltdpioy124.us-west-2.es.amazonaws.com'
-).option(
-    'es.port', 9200
-).option(
-    'es.resource', '%s/%s' % ('index_name', 'doc_type_name'),
-).save()
-
-'''
-
-
-'''
-# Write toe elastic search
-
-es_write_conf = {
-        "es.nodes" : "localhost",
-        "es.port" : "9200",
-        "es.resource" : 'walker/apache',
-        "es.input.json": "yes",
-        "es.mapping.id": "doc_id"
-    }
-
-rdd2 = rdd.map(parse)
-
-rdd3 = rdd2.map(addID    
-       
-rdd3.saveAsNewAPIHadoopFile(
-        path='-',
-        outputFormatClass="org.elasticsearch.hadoop.mr.EsOutputFormat",       
-        keyClass="org.apache.hadoop.io.NullWritable",
-        valueClass="org.elasticsearch.hadoop.mr.LinkedMapWritable",
-        conf=es_write_conf)
-
-rdd3 = rdd2.map(addID
-
-'''
+    
+    df_message_string_formatted = df_message_string_parsed.select(
+        col("msg_data.event").alias("event"))
+    
+      
+    # Print output to console
+    query_console = df_message_string_formatted.writeStream.outputMode("complete").format("console").start()
+    query_console.awaitTermination()
+    
+    print("Finish ")

@@ -50,3 +50,5 @@ geckodriver.log
 *.code-workspace
 .history
 .vscode
+
+*.invalid
