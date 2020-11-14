@@ -22,7 +22,7 @@ def kafka_is_up():
 
 	msg = 'health_check'
 	# print('sending: {}'.format(msg))
-	futures.append(producer.send('test', msg))
+	futures.append(producer.send('test', {'action':msg}))
 
 	ret = [f.get(timeout=10) for f in futures]	
 	producer.close()
@@ -56,7 +56,7 @@ def produce_test_data():
 	futures = []
 
 	for i in range(_num_message):
-		msg = 'msg {0}'.format(i)
+		msg = {'event': '{0}'.format(i)}
 		# print('sending: {}'.format(msg))
 		futures.append(producer.send(_topic, msg))
 
