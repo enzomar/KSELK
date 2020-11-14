@@ -12,7 +12,7 @@ On the terminal TWO
 ```sh
 python test/produce_data.py
 ```
-Waint and have a look to the oputput and both terminal, eventually checek the links blow.
+Wait and have a look to the oputput and both terminal, eventually checks the links blow.
 On the terminal TWO
 ```sh
 CTRL-C
@@ -29,7 +29,7 @@ You runned in docker
 - Elasticsearch
 - Kibana
 Then you subimitted and run
-- an intercative spark job writen in python that consumes Kafka records and print to consolle 
+- an intercative spark job writen in python that consumes Kafka records and print to consolle.
 Finally you have simultated the production of Kafka records.
 
 ***Usefull link***
