@@ -28,7 +28,7 @@ http://127.0.0.1:5601/
 sh stop.sh
 ```
 
-### What happened?
+### What just happened?
 
 You just run in docker 
 - Kafka 2.11
@@ -42,7 +42,7 @@ Then you subimitted
 
 On Kibana you set the index used by elastic search and finally you stopped all the processes.
 
-## Usefull link
+## Useful links
 - Jupiter notebook: ``` docker logs kselk_spark_1 | grep 127.0.0.1 | tail -1 ```
 - Spark: [http://127.0.0.1:4040/](http://127.0.0.1:4040/) (not working)
 - Elasticsearch: [http://127.0.0.1:9200/](http://127.0.0.1:9200/)
