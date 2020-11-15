@@ -4,16 +4,15 @@ echo "----------------------------"
 docker-compose stop 
 docker-compose build 
 
-# INSTALL ELASTIC
-# if MAC ...
-#
-# screen ~/Library/Containers/com.docker.docker/Data/vms/0/tty
-# sysctl -w vm.max_map_count=262144
-# CTRL a d 
-#
-# if linux
-sudo sysctl -w vm.max_map_count=262144
-#     
+# MEM CONFIG FOR RUNNING ELASTIC
+if [ "$(uname)" == "Darwin" ]; then
+	# screen ~/Library/Containers/com.docker.docker/Data/vms/0/tty
+	# sysctl -w vm.max_map_count=262144
+	# CTRL a d 
+elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
+	sudo sysctl -w vm.max_map_count=262144
+fi
+    
 
 docker-compose up -d
 docker-compose ps
