@@ -25,13 +25,14 @@ sh stop.sh
 ```
 
 ***What happened?***
-You runned in docker 
-- Kafka
-- Spark (with Jupyter Notebook)
-- Elasticsearch
-- Kibana
+
+You just run in docker 
+- Kafka 2.11
+- Spark (with Jupyter Notebook) 2.4.5 (Scala 2.11 and relative PySpark) 
+- Elasticsearch 6.00
+- Kibana 6.0.0
 Then you subimitted and run
-- an intercative spark job writen in python that consumes Kafka records and print to consolle.
+- an intercative spark job writen in python that consumes Kafka records and store into ES.
 Finally you have simultated the production of Kafka records.
 
 ***Usefull link***
