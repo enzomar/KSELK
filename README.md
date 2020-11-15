@@ -14,17 +14,16 @@ sh test/submit_sparkjob_py.sh
 ```sh
 python test/produce_data.py
 ```
-3. Wait and have a look to the oputput and both terminals.
-4. On the terminal TWO
+3. On the terminal TWO
 ```sh
 CTRL-C
 ```
-5. Open Kibana and set as index pattern ***demo-***
+4. Open Kibana and set as index pattern ***demo-***
 ```sh
 http://127.0.0.1:5601/
 ```
-6. Play around in Kibana (Discovery tab) to check it is populated.
-7. On the terminal ONE or TWO
+5. Play around in Kibana (Discovery tab) to check it is populated.
+6. On the terminal ONE or TWO
 ```sh
 sh stop.sh
 ```
