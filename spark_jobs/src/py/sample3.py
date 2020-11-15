@@ -14,7 +14,7 @@ KAFKA_BOOTSTRAP_SERVERS_CONS = 'kafka:9092'
 # Set Elasticsearch config
 es_hostname='elasticsearch'
 es_portno='9200'
-es_doc_type_name='demo_index'
+es_doc_type_name='demo_index/doc'
 
 spark = SparkSession \
     .builder \
@@ -41,14 +41,15 @@ message_schema = StructType() \
 df_message_string_parsed = df_message_string.select(from_json(df_message_string.value, message_schema).alias('msg_data'))
 
 # Start running the query that prints the running counts to the console
-
-query = df_message_string_parsed \
+'''
+queryConsolle = df_message_string_parsed \
     .writeStream \
     .outputMode("append") \
     .format("console") \
     .start()
+queryConsolle.awaitTermination()
 '''
-query = df_message_string_parsed \
+queryElastic = df_message_string_parsed \
         .writeStream \
         .format("es") \
         .outputMode("append") \
@@ -57,5 +58,5 @@ query = df_message_string_parsed \
         .option("checkpointLocation", "checkpoint/send_to_es") \
         .option('es.resource', es_doc_type_name) \
         .start("orders/log")
-'''
-query.awaitTermination()
+
+queryElastic.awaitTermination()
