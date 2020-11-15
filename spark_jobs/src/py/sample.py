@@ -13,7 +13,7 @@ KAFKA_BOOTSTRAP_SERVERS_CONS = 'kafka:9092'
 # Set Elasticsearch config
 es_hostname='elasticsearch'
 es_portno='9200'
-es_doc_type_name='demo_index/doc'
+es_doc_type_name='demo-index/doc'
 
 spark = SparkSession \
     .builder \
@@ -39,10 +39,11 @@ message_schema = StructType() \
     .add('event', StringType())    
 # parse JSON data
 df_message_string_parsed = df_message_string.select(from_json(df_message_string.value, message_schema).alias('msg_data'))
+# https://kb.objectrocket.com/elasticsearch/how-to-create-a-timestamp-field-for-an-elasticsearch-index-275
 df=df_message_string_parsed.withColumn('timestamp', current_timestamp())
 
 # Start running the query that prints the running counts to the console
-'''
+
 queryConsolle = df \
     .writeStream \
     .outputMode("append") \
@@ -62,4 +63,5 @@ queryElastic = df \
         .start()
 
 queryElastic.awaitTermination()
+'''
 

@@ -29,6 +29,8 @@ def produce_test_data():
 
 
 def run():
+	print('I will send 100 sample events each 2 seconds starting from now.')
+	print('Press CTRL-C to stop me...')
 	while True:
 		produce_test_data()
 		time.sleep(2)
