@@ -2,6 +2,7 @@ from kafka import KafkaProducer
 import json
 import os
 import time
+from datetime import datetime
 import logging
 # uncomment to see kafka module log
 # logging.basicConfig(level=logging.DEBUG)

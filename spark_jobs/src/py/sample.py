@@ -1,10 +1,9 @@
 import os
-os.environ['PYSPARK_SUBMIT_ARGS'] = '--packages org.apache.spark:spark-streaming-kafka-0-8_2.11:2.1.0,org.apache.spark:spark-sql-kafka-0-10_2.12:3.0.1 pyspark-shell'
+os.environ['PYSPARK_SUBMIT_ARGS'] = '--packages org.apache.spark:spark-streaming-kafka-0-10_2.11:2.4.5,org.apache.spark:spark-sql-kafka-0-10_2.12:2.4.5 pyspark-shell'
 
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import explode
-from pyspark.sql.functions import split
 from pyspark.sql.functions import from_json
+from pyspark.sql.functions import current_timestamp
 from pyspark.sql.types import StructType
 from pyspark.sql.types import StringType
 
@@ -31,6 +30,7 @@ df_message = spark \
     .option("subscribe", KAFKA_TOPIC_NAME_CONS) \
     .load()
 
+print('Processing...')
 # convert the data into string
 df_message_string = df_message.selectExpr("CAST(value AS STRING) as value")
 
@@ -39,17 +39,19 @@ message_schema = StructType() \
     .add('event', StringType())    
 # parse JSON data
 df_message_string_parsed = df_message_string.select(from_json(df_message_string.value, message_schema).alias('msg_data'))
+df=df_message_string_parsed.withColumn('timestamp', current_timestamp())
 
 # Start running the query that prints the running counts to the console
 '''
-queryConsolle = df_message_string_parsed \
+queryConsolle = df \
     .writeStream \
     .outputMode("append") \
     .format("console") \
     .start()
 queryConsolle.awaitTermination()
+
 '''
-queryElastic = df_message_string_parsed \
+queryElastic = df \
         .writeStream \
         .format("es") \
         .outputMode("append") \
@@ -57,6 +59,7 @@ queryElastic = df_message_string_parsed \
         .option("es.port", es_portno) \
         .option("checkpointLocation", "checkpoint/send_to_es") \
         .option('es.resource', es_doc_type_name) \
-        .start("orders/log")
+        .start()
 
 queryElastic.awaitTermination()
+
