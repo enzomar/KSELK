@@ -43,7 +43,7 @@ df_message_string_parsed = df_message_string.select(from_json(df_message_string.
 df=df_message_string_parsed.withColumn('timestamp', current_timestamp())
 
 # Start running the query that prints the running counts to the console
-
+'''
 queryConsolle = df \
     .writeStream \
     .outputMode("append") \
@@ -63,5 +63,5 @@ queryElastic = df \
         .start()
 
 queryElastic.awaitTermination()
-'''
+
 
