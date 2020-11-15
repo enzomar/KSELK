@@ -29,11 +29,10 @@ services:
 
   
   spark:
-      # image: sequenceiq/spark:1.6.0
-      # image: jupyter/pyspark-notebook
+      # spark 2.4.5 - scala 2.11.12
+      # it does not contain scalac compiler
+      # Web UI not accessible (todo?)
       image: jupyter/pyspark-notebook:spark-2
-      # hostname: sandbox
-      # command: bash
       networks: 
        - data-stream
       ports:
@@ -42,7 +41,6 @@ services:
         - 8888:8888
         - 4040-4080:4040-4080
       volumes:
-        - ./spark_jobs:/tmp/app
         - ./spark_jobs:/home/jovyan/work                
       tty: true
   
@@ -65,7 +63,6 @@ services:
     networks: 
        - data-stream
     environment:
-      # KAFKA_ADVERTISED_HOST_NAME: kafka
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
       KAFKA_DELETE_TOPIC_ENABLE: 'true'
@@ -75,18 +72,8 @@ services:
       # advertised.listeners: Hostname and port the broker will advertise to producers and consumers.
       KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka:9092,EXTERNAL://localhost:19092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
-
       KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL      
 
-      #KAFKA_LISTENERS: INTERNAL://kafka:9092,OUTSIDE://kafka:9094
-      #KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka:9092,OUTSIDE://kafka:9094
-      #KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,OUTSIDE:PLAINTEXT
-      
-      
-      #KAFKA_ADVERTISED_LISTENERS: INSIDE://:9092,OUTSIDE://127.0.0.1:9094
-      #KAFKA_LISTENERS: INSIDE://:9092,OUTSIDE://:9094
-      #KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
-      #KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
 

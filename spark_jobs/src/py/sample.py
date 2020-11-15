@@ -6,6 +6,7 @@ from pyspark.sql.functions import from_json
 from pyspark.sql.functions import current_timestamp
 from pyspark.sql.types import StructType
 from pyspark.sql.types import StringType
+from datetime import datetime
 
 KAFKA_TOPIC_NAME_CONS = "topic-test"
 KAFKA_BOOTSTRAP_SERVERS_CONS = 'kafka:9092'
@@ -40,6 +41,7 @@ message_schema = StructType() \
 # parse JSON data
 df_message_string_parsed = df_message_string.select(from_json(df_message_string.value, message_schema).alias('msg_data'))
 # https://kb.objectrocket.com/elasticsearch/how-to-create-a-timestamp-field-for-an-elasticsearch-index-275
+# https://sparkbyexamples.com/spark/spark-dataframe-withcolumn/
 df=df_message_string_parsed.withColumn('timestamp', current_timestamp())
 
 # Start running the query that prints the running counts to the console
@@ -50,8 +52,8 @@ queryConsolle = df \
     .format("console") \
     .start()
 queryConsolle.awaitTermination()
-
 '''
+
 queryElastic = df \
         .writeStream \
         .format("es") \
