@@ -40,6 +40,8 @@ Then you subimitted
 - an interactive spark job written in Python that consumes Kafka records and store into ES.
 - a script to send sample records to Kafka.
 
+On Kibana you set the index used by elastic search and finally you stopped all the processes.
+
 ## Usefull link
 - Jupiter notebook: ``` docker logs kselk_spark_1 | grep 127.0.0.1 | tail -1 ```
 - Spark: [http://127.0.0.1:4040/](http://127.0.0.1:4040/) (not working)
