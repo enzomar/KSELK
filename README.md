@@ -33,8 +33,8 @@ You just run in docker
 - Kibana 6.0.0
 
 Then you subimitted and run
-- an intercative spark job writen in python that consumes Kafka records and store into ES.
-Finally you have simultated the production of Kafka records.
+- an interactive spark job writen in python that consumes Kafka records and store into ES.
+- a script to send sample records to Kafka.
 
 ## Usefull link
 - Jupiter notebook: ``` docker logs kselk_spark_1 | grep 127.0.0.1 | tail -1 ```
