@@ -30,7 +30,7 @@ def produce_test_data():
 def run():
 	while True:
 		produce_test_data()
-		time.spleep(2)
+		time.sleep(2)
 
 	
 
