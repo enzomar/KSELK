@@ -24,7 +24,7 @@ On the terminal ONE
 sh stop.sh
 ```
 
-***What happened?***
+### What happened?
 
 You just run in docker 
 - Kafka 2.11
@@ -35,7 +35,7 @@ Then you subimitted and run
 - an intercative spark job writen in python that consumes Kafka records and store into ES.
 Finally you have simultated the production of Kafka records.
 
-***Usefull link***
+## Usefull link
 - Jupiter notebook: ``` docker logs kselk_spark_1 | grep 127.0.0.1 | tail -1 ```
 - Spark: [http://127.0.0.1:4040/](http://127.0.0.1:4040/)
 - Elasticsearch: [http://127.0.0.1:9200/](http://127.0.0.1:9200/)
