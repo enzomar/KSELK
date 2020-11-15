@@ -27,6 +27,16 @@ services:
           soft: 65536
           hard: 65536
 
+  scalac: 
+      # used eventually to compile the scala spark job
+      image: spikerlabs/scala-sbt:scala-2.11.12-sbt-1.0.4
+      command: 
+        - /bin/bash
+      networks: 
+        - data-stream
+      volumes:
+        - ./spark_jobs:/tmp/spark_jobs:rw
+      tty: true               
   
   spark:
       # spark 2.4.5 - scala 2.11.12
