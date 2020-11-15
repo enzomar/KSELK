@@ -15,11 +15,12 @@ On the terminal TWO
 python test/produce_data.py
 ```
 Wait and have a look to the oputput and both terminals.
-Open Kibana and set as index patternd ***demo-***
+Open Kibana and set as index pattern ***demo-***
 ```sh
 http://127.0.0.1:5601/
 ```
 Play around in Kibana (Discovery tab) to check it is populated.
+
 On the terminal TWO
 ```sh
 CTRL-C
