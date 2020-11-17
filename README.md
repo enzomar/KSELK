@@ -2,6 +2,8 @@
 
 **K**afka - **S**park - **EL**asticsearch - **K**ibana
 
+Sandbox to play with Big Data.
+
 ![](doc/archi.png)
 
 ## How to run / simulate
