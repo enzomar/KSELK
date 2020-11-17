@@ -7,6 +7,9 @@ Sandbox to play with Big Data.
 ![](doc/archi.png)
 
 ## How to run / simulate
+## Prerequisite
+Docker
+## Steps
 1. On the terminal ONE
 ```sh
 sh start
