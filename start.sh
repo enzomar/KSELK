@@ -19,7 +19,7 @@ docker-compose up -d
 docker-compose ps
 
 echo "----------------------------"
-echo " Validate connections"
+echo " Validate connections (wait 30 sec)"
 echo "----------------------------"
-sleep 8
+sleep 30
 python3 test/validate.py

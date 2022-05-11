@@ -19,6 +19,7 @@ services:
       environment:
         - cluster.name=es-cluster
         - "ES_KAVA_OPTS=Xms1g -Xmx1g"
+        - discovery.type=single-node
       ulimits:
         memlock:
           soft: -1
