@@ -68,7 +68,7 @@ CTRL a d
 
 ### Monitor via Kafka tool
 Install https://www.kafkatool.com/download.html
-and confifure as following
+and configure as following
 ![](doc/Advanced.png)
 ![](doc/AddCluster.png)
 then open the partition 0 and press GREEN PLAY button
